@@ -35,7 +35,8 @@ public class MovieFragA extends Fragment {
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String BASE_URL = "http://api.themoviedb.org/3/";
     private static Retrofit retrofit = null;
-    private final static String API_KEY = "e49c7fcd1c738a50afd1c8c6ca9d1fe9";
+    //TODO - add your API KEY
+    private final static String API_KEY = "";
     RecyclerView movieRV;
 
     public MovieFragA() {

@@ -33,8 +33,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieHolder> {
     @Override
     public MovieHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_grid_item, parent, false);
-        MovieHolder movieHolder = new MovieHolder(v);
-        return movieHolder;
+        return new MovieHolder(v);
     }
 
     @Override
