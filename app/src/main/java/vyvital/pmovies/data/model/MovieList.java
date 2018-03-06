@@ -1,4 +1,4 @@
-package vyvital.pmovies;
+package vyvital.pmovies.data.model;
 
 import java.util.List;
 

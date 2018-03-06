@@ -9,12 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import vyvital.pmovies.Movie;
 import vyvital.pmovies.R;
+import vyvital.pmovies.data.model.Movie;
 import vyvital.pmovies.fragments.MovieFragA;
 import vyvital.pmovies.fragments.MovieFragB;
 
@@ -40,7 +42,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieHolder> {
     public void onBindViewHolder(final MovieHolder holder, final int position) {
         final String image_url = IMAGE_PATH + movies.get(position).getPoster();
         final Movie ms = movies.get(position);
-        Picasso.with(context).load(image_url).into(holder.poster);
+        Picasso.with(context).load(image_url).networkPolicy(NetworkPolicy.OFFLINE).into(holder.poster, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+                Picasso.with(context)
+                        .load(image_url)
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
+                        .into(holder.poster);
+            }
+        });
         ViewCompat.setTransitionName(holder.poster, ms.getTitle());
         holder.poster.setOnClickListener(new View.OnClickListener() {
             @Override

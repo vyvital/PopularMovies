@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -10,6 +11,7 @@
         android:id="@+id/movieRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
     </android.support.v7.widget.RecyclerView>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -33,9 +35,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/empty_shelter_image"
             android:layout_centerHorizontal="true"
+            android:fontFamily="@font/geomanist"
             android:paddingTop="10dp"
             android:text="@string/no_internet_connection_found"
-            android:textAppearance="?android:textAppearanceMedium" />
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/empty_subtitle_text"
@@ -43,9 +47,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/empty_title_text"
             android:layout_centerHorizontal="true"
+            android:fontFamily="@font/geomanist"
             android:paddingTop="2dp"
             android:text="@string/check_your_connection"
-            android:textAppearance="?android:textAppearanceSmall" />
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/white" />
 
     </RelativeLayout>
 

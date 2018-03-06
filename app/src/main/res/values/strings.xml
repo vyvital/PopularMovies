@@ -1,11 +1,17 @@
 <resources>
     <string name="app_name">PMovies</string>
-    <string name="mark_as_favorite">MARK AS &#10;FAVORITE</string>
     <string name="sort_by_most_popular">Sort By Most Popular</string>
     <string name="sort_by_highest_rated">Sort By Highest Rated</string>
+    <string name="sort_by_favorite">Sort By Favorite</string>
     <string name="settings">Settings</string>
     <string name="no_internet_connection_found">No Internet connection found</string>
     <string name="check_your_connection">Check your connection</string>
     <string name="_120min">120min</string>
     <string name="imageview_poster">ImageView poster</string>
+    <string name="reviews">REVIEWS</string>
+    <string name="empty_review">There are no Reviews for this Movie.</string>
+    <string name="fav_add">&#160;Was add to Favorites</string>
+    <string name="fav_remove">&#160;Was removed from Favorites</string>
+    <string name="mark_as_favorite">Mark As Favorite</string>
+
 </resources>
