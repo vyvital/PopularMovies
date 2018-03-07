@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionInflater;
@@ -20,7 +21,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +42,7 @@ import vyvital.pmovies.Utils.FavoriteUtils;
 import vyvital.pmovies.Utils.MovieAdapter;
 import vyvital.pmovies.Utils.MovieApi;
 import vyvital.pmovies.Utils.ReviewAdapter;
+import vyvital.pmovies.Utils.TrailerAdapter;
 import vyvital.pmovies.data.MovieDbHelper;
 import vyvital.pmovies.data.model.Movie;
 import vyvital.pmovies.data.model.MovieList;
@@ -50,6 +54,8 @@ import static vyvital.pmovies.fragments.MovieFragA.BASE_URL;
 
 public class MovieFragB extends Fragment {
 
+    public static final String DB_PATH = "https://www.themoviedb.org/movie/";
+
     Call<MovieList> call;
     private TextView mTitle;
     private TextView mRelease;
@@ -60,10 +66,16 @@ public class MovieFragB extends Fragment {
     private ImageView mPoster;
     private Movie movie;
     private FloatingTextButton fav;
-    private FloatingTextButton yt;
     private static Retrofit retrofit = null;
     RecyclerView reviewRV;
+    RecyclerView trailerRV;
     private SQLiteDatabase mdb;
+    private LinearLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager2;
+    private NestedScrollView nestedScrollView;
+    private View line;
+    private ImageButton movieDB;
+
 
     public MovieFragB() {
     }
@@ -71,6 +83,7 @@ public class MovieFragB extends Fragment {
     public static MovieFragB newInstance() {
         return new MovieFragB();
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,9 +94,8 @@ public class MovieFragB extends Fragment {
         }
         MovieDbHelper dbHelper = new MovieDbHelper(getActivity());
         mdb = dbHelper.getWritableDatabase();
-
-
     }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -93,11 +105,13 @@ public class MovieFragB extends Fragment {
         if (getArguments() != null) {
             movie = getArguments().getParcelable(MovieAdapter.MOVIE_KEY);
         }
-
         if (movie != null) {
             initialize(view);
             if (testNetwork()) connectAndGetApiData();
-            else yt.setVisibility(View.INVISIBLE);
+            else {
+                trailerRV.setVisibility(View.GONE);
+                line.setVisibility(View.GONE);
+            }
             if (isFavorite(movie.getId()))
                 fav.setLeftIconDrawable(getResources().getDrawable(R.drawable.ic_star_yellow_24dp));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -109,6 +123,7 @@ public class MovieFragB extends Fragment {
             mRelease.setText(movie.getRelease().substring(0, 4));
             mVote.setText(movie.getVote() + "/10");
         }
+
         return view;
     }
 
@@ -117,7 +132,6 @@ public class MovieFragB extends Fragment {
         String selection = COLUMN_ID + " =?";
         String[] selectionArgs = {id};
         String limit = "1";
-
         Cursor cursor = mdb.query(TABLE_NAME, columns, selection, selectionArgs, null, null, null, limit);
         boolean exists = (cursor.getCount() > 0);
         cursor.close();
@@ -130,15 +144,22 @@ public class MovieFragB extends Fragment {
     }
 
     private void initialize(View view) {
+        nestedScrollView = view.findViewById(R.id.nested);
         reviewRV = view.findViewById(R.id.reviewRV);
-        reviewRV.setLayoutManager(new LinearLayoutManager(getActivity()));
+        layoutManager = new LinearLayoutManager(getActivity());
+        reviewRV.setLayoutManager(layoutManager);
         reviewRV.setHasFixedSize(true);
+        line = view.findViewById(R.id.trailerLine);
+        trailerRV = view.findViewById(R.id.trailerRV);
+        layoutManager2 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        trailerRV.setLayoutManager(layoutManager2);
+        trailerRV.setHasFixedSize(true);
+        movieDB = view.findViewById(R.id.movieDB);
         mPoster = view.findViewById(R.id.m_poster);
         mTitle = view.findViewById(R.id.m_title);
         mPlot = view.findViewById(R.id.m_script);
         mRelease = view.findViewById(R.id.m_release);
         mVote = view.findViewById(R.id.m_vote);
-        yt = view.findViewById(R.id.yt_btn);
         fav = view.findViewById(R.id.fav_btn);
         contentTxt = view.findViewById(R.id.m_scripts);
         fav.setOnClickListener(new View.OnClickListener() {
@@ -156,10 +177,11 @@ public class MovieFragB extends Fragment {
 
             }
         });
-        yt.setOnClickListener(new View.OnClickListener() {
+        movieDB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                watchYT(getActivity(), key);
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(DB_PATH+movie.getId()));
+                startActivity(browserIntent);
             }
         });
     }
@@ -177,8 +199,11 @@ public class MovieFragB extends Fragment {
             @Override
             public void onResponse(@NonNull Call<MovieList> call, @NonNull Response<MovieList> response) {
                 List<Movie> movies = response.body().getResults();
-                if (response.body().getResults().size() == 0) yt.setVisibility(View.INVISIBLE);
-                else key = movies.get(0).getKey();
+                if (response.body().getResults().size() == 0) {
+                    trailerRV.setVisibility(View.GONE);
+                    line.setVisibility(View.GONE);
+                } else key = movies.get(0).getKey();
+                trailerRV.setAdapter(new TrailerAdapter(movies, getActivity()));
             }
 
             @Override
@@ -191,9 +216,10 @@ public class MovieFragB extends Fragment {
             @Override
             public void onResponse(@NonNull Call<MovieList> call, @NonNull Response<MovieList> response) {
                 List<Movie> movies = response.body().getResults();
-                if (response.body().getResults().size() == 0)
+                if (response.body().getResults().size() == 0) {
                     contentTxt.setText(R.string.empty_review);
-                else {
+                    contentTxt.setVisibility(View.VISIBLE);
+                } else {
                     reviewRV.setAdapter(new ReviewAdapter(movies, getActivity()));
                 }
             }
@@ -205,16 +231,6 @@ public class MovieFragB extends Fragment {
         });
     }
 
-    private void watchYT(Context context, String key) {
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + key));
-        Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://www.youtube.com/watch?v=" + key));
-        try {
-            context.startActivity(appIntent);
-        } catch (ActivityNotFoundException ex) {
-            context.startActivity(webIntent);
-        }
-    }
 
     public boolean testNetwork() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -223,5 +239,22 @@ public class MovieFragB extends Fragment {
         return ((networkInfo != null) && (networkInfo.isConnected()));
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntArray("SCROLL", new int[]{nestedScrollView.getScrollX(), nestedScrollView.getScrollY()});
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null){
+        final int[] position = savedInstanceState.getIntArray("SCROLL_POSITION");
+        if(position != null)
+            nestedScrollView.post(new Runnable() {
+                public void run() {
+                    nestedScrollView.scrollTo(position[0], position[1]);
+                }
+            });
+    }}
 }

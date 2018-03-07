@@ -89,28 +89,48 @@
                 app:floating_title="Favorite"
                 app:floating_title_color="@android:color/white" />
 
-            <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                android:id="@+id/yt_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="6dp"
-                app:floating_background_color="@color/red"
-                app:floating_left_icon="@drawable/ic_play_circle_filled_black_24dp"
-                app:floating_title="Play Trailer"
-                app:floating_title_color="@android:color/white" />
+            <ImageButton
+                android:id="@+id/movieDB"
+                android:layout_width="128dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_powered_by_rectangle_green_dcada16968ed648d5eb3b36bbcfdd8cdf804f723dcca775c8f2bf4cea025aad6" />
+
         </LinearLayout>
 
     </LinearLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nested"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/trailerRV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <View
+                android:id="@+id/trailerLine"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:background="#ffffff" />
 
             <TextView
                 android:id="@+id/m_script"
@@ -145,9 +165,12 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/reviewRV"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
                 android:paddingEnd="16dp"
-                android:paddingStart="16dp">
+                android:paddingStart="16dp"
+
+                >
 
             </android.support.v7.widget.RecyclerView>
 
@@ -158,6 +181,7 @@
                 android:fontFamily="@font/geomanist"
                 android:padding="16dp"
                 android:textColor="@color/white"
+                android:visibility="gone"
                 tools:text="Enable or disable favorite funcpost type while automatic" />
 
 

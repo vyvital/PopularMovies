@@ -81,4 +81,5 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieHolder> {
         return movies.size();
     }
 
+
 }
