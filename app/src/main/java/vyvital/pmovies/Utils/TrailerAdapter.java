@@ -24,7 +24,7 @@ import java.util.List;
 
 import vyvital.pmovies.R;
 import vyvital.pmovies.data.model.Movie;
-import vyvital.pmovies.fragments.MovieFragB;
+
 
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHolder> {
@@ -67,14 +67,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
         holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + mData.get(position).getKey()));
-                Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://www.youtube.com/watch?v=" + mData.get(position).getKey()));
-                try {
-                    context.startActivity(appIntent);
-                } catch (ActivityNotFoundException ex) {
-                    context.startActivity(webIntent);
-                }
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + mData.get(position).getKey())));
             }
         });
     }
