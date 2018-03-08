@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,7 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -39,7 +37,7 @@ import vyvital.pmovies.data.model.Movie;
 import vyvital.pmovies.data.model.MovieList;
 
 public class MovieFragA extends Fragment {
-    int sort = 0 ;
+    int sort = 0;
     Call<MovieList> call;
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String BASE_URL = "http://api.themoviedb.org/3/";
@@ -62,7 +60,7 @@ public class MovieFragA extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null)
-        sort = savedInstanceState.getInt("sort");
+            sort = savedInstanceState.getInt("sort");
         View rootView = inflater.inflate(R.layout.fragment_a, container, false);
         View emptyView = rootView.findViewById(R.id.empty_view);
         setHasOptionsMenu(true);
@@ -183,7 +181,7 @@ public class MovieFragA extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("sort",sort);
+        outState.putInt("sort", sort);
     }
 
 

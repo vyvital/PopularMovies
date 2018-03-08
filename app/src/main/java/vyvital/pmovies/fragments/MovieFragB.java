@@ -1,6 +1,5 @@
 package vyvital.pmovies.fragments;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,9 +20,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +54,6 @@ import static vyvital.pmovies.fragments.MovieFragA.BASE_URL;
 public class MovieFragB extends Fragment {
 
     public static final String DB_PATH = "https://www.themoviedb.org/movie/";
-
     Call<MovieList> call;
     private TextView mTitle;
     private TextView mRelease;
@@ -180,7 +178,7 @@ public class MovieFragB extends Fragment {
         movieDB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(DB_PATH+movie.getId()));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(DB_PATH + movie.getId()));
                 startActivity(browserIntent);
             }
         });
@@ -248,13 +246,17 @@ public class MovieFragB extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null){
-        final int[] position = savedInstanceState.getIntArray("SCROLL_POSITION");
-        if(position != null)
-            nestedScrollView.post(new Runnable() {
-                public void run() {
-                    nestedScrollView.scrollTo(position[0], position[1]);
-                }
-            });
-    }}
+        if (savedInstanceState != null) {
+            final int[] position = savedInstanceState.getIntArray("SCROLL");
+            if (position.length > 0)
+                nestedScrollView.getViewTreeObserver()
+                        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            public void onGlobalLayout() {
+                                nestedScrollView.scrollTo(position[0], position[1]);
+                            }
+                        });
+        }
+    }
+
+
 }
